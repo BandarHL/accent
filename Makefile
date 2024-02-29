@@ -1,13 +1,13 @@
+ARCHS = arm64 arm64e
+TARGET := iphone:clang:latest:14.0
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Accent
 
 Accent_FILES = Tweak.x
-Accent_CFLAGS = -fobjc-arc
-Accent_EXTRA_FRAMEWORKS += Cephei
+Accent_CFLAGS = -fobjc-arc -Wno-deprecated-declarations -Wno-nullability-completeness -Wno-unused-function -Wno-unused-property-ivar -Wno-error
+Accent_EXTRA_FRAMEWORKS += Cephei CepheiPrefs CepheiUI
 Accent_LIBRARIES = colorpicker
-SDKVERSION = 13.3
-SYSROOT = $(THEOS)/sdks/iPhoneOS13.3.sdk
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += accentpreferences

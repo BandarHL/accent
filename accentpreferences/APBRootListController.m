@@ -1,8 +1,14 @@
 #include "APBRootListController.h"
-#import <CepheiPrefs/HBAppearanceSettings.h>
 #import "libcolorpicker.h"
+#import <rootless.h>
 
-#define PreferencesFilePath [NSString stringWithFormat:@"/var/mobile/Library/Preferences/com.ivanc.accentpreferences.plist"]
+#ifdef XINA_SUPPORT
+#define ROOT_PATH_NS_NOXINA(x) x
+#else
+#define ROOT_PATH_NS_NOXINA(x) ROOT_PATH_NS(x)
+#endif
+
+#define PreferencesFilePath ROOT_PATH_NS_NOXINA(@"/var/mobile/Library/Preferences/com.ivanc.accentpreferences.plist")
 static NSDictionary* preferences;
 NSString* currentHex;
 NSString* currentChoice;

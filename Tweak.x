@@ -1,22 +1,28 @@
 #import "Headers.h"
+#import <Cephei/HBPreferences.h>
+#import <rootless.h>
+
+#ifdef XINA_SUPPORT
+#define ROOT_PATH_NS_NOXINA(x) x
+#else
+#define ROOT_PATH_NS_NOXINA(x) ROOT_PATH_NS(x)
+#endif
 
 #define isCurrentApp(string) [[[NSBundle mainBundle] bundleIdentifier] isEqual : string]
-#define PreferencesFilePath [NSString stringWithFormat:@"/var/mobile/Library/Preferences/com.ivanc.accentpreferences.plist"]
-#define ExcludedFilePath [NSString stringWithFormat:@"/var/mobile/Library/Preferences/com.ivanc.accentexcluded.plist"]
+#define PreferencesFilePath ROOT_PATH_NS_NOXINA(@"/var/mobile/Library/Preferences/com.ivanc.accentpreferences.plist")
 #define PreferencesChangedNotification "com.ivanc.preferenceschanged"
 
 //Storing colors in a NSDictionary
 static NSDictionary *myColors;
 
-static NSDictionary* preferences;
-static NSDictionary* excludedApps;
-static NSMutableArray* excludedAppsArray;
+static NSDictionary *preferences;
+static NSMutableArray *excludedAppsArray;
 static BOOL enabled;
-NSString* color;
-NSString* hexString;
-UIColor* defaultColor;
-UIColor* pickedColor;
-UIColor* newColor;
+NSString *color;
+NSString *hexString;
+UIColor *defaultColor;
+UIColor *pickedColor;
+UIColor *newColor;
 
 void setDict() {
     preferences = [[NSDictionary alloc] initWithContentsOfFile:PreferencesFilePath];
@@ -25,7 +31,7 @@ void setDict() {
         enabled = NO;
         [preferences setValue:[NSNumber numberWithBool:enabled] forKey:@"isEnabled"];
         [preferences setValue:@"Pink" forKey:@"isColor"];
-	    [preferences setValue:@"#FF779A" forKey:@"rgbValue"];
+        [preferences setValue:@"#FF779A" forKey:@"rgbValue"];
     }
 
     if ([preferences objectForKey:@"isEnabled"] != nil) {
@@ -38,25 +44,20 @@ void setDict() {
 }
 
 void setColor() {
-    /*  Switching from NSUserdefaults to logging method because it doesn't work inside sandboxed application
-        Check iPhoneDevWiki to know more (https://iphonedevwiki.net/index.php/PreferenceBundles#Loading_Preferences) */
-    // preferences = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.ivanc.accentpreferences"];
     preferences = [[NSDictionary alloc] initWithContentsOfFile:PreferencesFilePath];
-    excludedApps = [[NSDictionary alloc] initWithContentsOfFile:ExcludedFilePath];
-    excludedAppsArray = [NSMutableArray array];
     NSMutableDictionary *prefsDict = [NSMutableDictionary dictionaryWithContentsOfFile:PreferencesFilePath];
-		if (!prefsDict) prefsDict = [NSMutableDictionary dictionary];
+        if (!prefsDict) prefsDict = [NSMutableDictionary dictionary];
 
     defaultColor = [UIColor colorWithRed:1.00 green:0.47 blue:0.60 alpha:1.0];
 
     if ([preferences objectForKey:@"rgbValue"] == nil) {
-		[prefsDict setObject:@"#FF779A" forKey:@"rgbValue"];
-		[prefsDict writeToFile:PreferencesFilePath atomically:YES];
+        [prefsDict setObject:@"#FF779A" forKey:@"rgbValue"];
+        [prefsDict writeToFile:PreferencesFilePath atomically:YES];
         //[preferences setValue:@"#FF779A" forKey:@"rgbValue"];
     }
 
     if ([[preferences objectForKey:@"isColor"] isEqual:@"Picked"]) {
-		hexString = [preferences objectForKey:@"rgbValue"];
+        hexString = [preferences objectForKey:@"rgbValue"];
         unsigned RGB;
         NSScanner *scanner = [NSScanner scannerWithString:hexString];
         [scanner setScanLocation:1]; // bypass '#' character
@@ -88,17 +89,16 @@ void setColor() {
         //If its nil use whatever color from the dictionary
         newColor = [myColors objectForKey:@"Pink"];
         [prefsDict setObject:newColor forKey:@"isColor"];
-		[prefsDict writeToFile:PreferencesFilePath atomically:YES];
+        [prefsDict writeToFile:PreferencesFilePath atomically:YES];
     }
 
-    for (id key in excludedApps) {
-        if ([[excludedApps valueForKey:key] boolValue] == YES) {
-            [excludedAppsArray addObject:key];
-        }
+    if ([preferences objectForKey:@"excludedApps"]) {
+        excludedAppsArray = [preferences objectForKey:@"excludedApps"];
+    } else {
+        excludedAppsArray = [NSMutableArray array];
     }
 
     [[%c(UIApplication) sharedApplication] keyWindow];
-
 }
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {

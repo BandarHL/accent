@@ -103,47 +103,33 @@
 			<string>Current Hex</string>
 		</dict>
 		<dict>
-			<key>bundle</key>
-			<string>AppList</string>
 			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>isController</key>
-			<string>1</string>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>ATLApplicationListMultiSelectionController</string>
+			<key>defaults</key>
+			<string>com.ivanc.accentpreferences</string>
+			<key>key</key>
+			<string>excludedApps</string>
 			<key>label</key>
 			<string>Excluded Apps</string>
-			<key>ALSettingsPath</key>
-			<string>/var/mobile/Library/Preferences/com.ivanc.accentexcluded.plist</string>
-			<key>ALSettingsKeyPrefix</key>
-			<string></string>
-			<key>ALChangeNotification</key>
-			<string>com.ivanc.preferenceschanged</string>
-			<key>ALAllowsSelection</key>
-			<string>1</string>
-			<key>ALSectionDescriptors</key>
+			<key>showIdentifiersAsSubtitle</key>
+			<true/>
+			<key>defaultApplicationSwitchValue</key>
+			<false/>
+			<key>useSearchBar</key>
+			<true/>
+			<key>hideSearchBarWhileScrolling</key>
+			<false/>
+			<key>sections</key>
 			<array>
 				<dict>
-					<key>title</key>
-					<string>System Applications</string>
-					<key>predicate</key>
-					<string>isSystemApplication = TRUE</string>
-					<key>cell-class-name</key>
-					<string>ALCheckCell</string>
-					<key>icon-size</key>
-					<string>29</string>
-					<key>suppress-hidden-apps</key>
-					<string>1</string>
+					<key>sectionType</key>
+					<string>System</string>
 				</dict>
 				<dict>
-					<key>title</key>
-					<string>User Applications</string>
-					<key>predicate</key>
-					<string>isSystemApplication = FALSE</string>
-					<key>cell-class-name</key>
-					<string>ALCheckCell</string>
-					<key>icon-size</key>
-					<string>29</string>
-					<key>suppress-hidden-apps</key>
-					<string>1</string>
+					<key>sectionType</key>
+					<string>User</string>
 				</dict>
 			</array>
 		</dict>
