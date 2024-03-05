@@ -1,5 +1,4 @@
 #import "Headers.h"
-#import <Cephei/HBPreferences.h>
 #import <rootless.h>
 
 #ifdef XINA_SUPPORT
